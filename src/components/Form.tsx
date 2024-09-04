@@ -1,7 +1,9 @@
-import { EyeIcon } from 'lucide-react';
-// import { EyeOffIcon } from 'lucide-react';
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useState } from "react";
 
 export default function Form() {
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
   return (
     <form>
       <div className="mb-4">
@@ -19,26 +21,45 @@ export default function Form() {
       <div className="mb-4">
         <label htmlFor="password">Senha</label>
         <div className="relative">
-          <input type="password" id="password" />
+          <input type={isPasswordVisible ? "text" : "password"} id="password" />
           <span className="absolute right-3 top-3">
-            <EyeIcon size={20} className="text-slate-600 cursor-pointer" />
-            {/* <EyeOffIcon
-                      className="text-slate-600 cursor-pointer"
-                      size={20}
-                    /> */}
+            <button
+              type="button"
+              onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+            >
+              {isPasswordVisible ? (
+                <EyeIcon size={20} className="text-slate-600 cursor-pointer" />
+              ) : (
+                <EyeOffIcon
+                  size={20}
+                  className="text-slate-600 cursor-pointer"
+                />
+              )}
+            </button>
           </span>
         </div>
       </div>
       <div className="mb-4">
         <label htmlFor="confirm-password">Confirmar Senha</label>
         <div className="relative">
-          <input type="password" id="confirm-password" />
+          <input
+            type={isPasswordVisible ? "text" : "password"}
+            id="confirm-password"
+          />
           <span className="absolute right-3 top-3">
-            <EyeIcon size={20} className="text-slate-600 cursor-pointer" />
-            {/* <EyeOffIcon
-                  className="text-slate-600 cursor-pointer"
+            <button
+              type="button"
+              onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+            >
+              {isPasswordVisible ? (
+                <EyeIcon size={20} className="text-slate-600 cursor-pointer" />
+              ) : (
+                <EyeOffIcon
                   size={20}
-                /> */}
+                  className="text-slate-600 cursor-pointer"
+                />
+              )}
+            </button>
           </span>
         </div>
       </div>
@@ -80,7 +101,7 @@ export default function Form() {
           className="text-sm  font-light text-slate-500 mb-1 inline"
           htmlFor="terms"
         >
-          Aceito os{' '}
+          Aceito os{" "}
           <span className="underline hover:text-slate-900 cursor-pointer">
             termos e condições
           </span>
