@@ -2,9 +2,21 @@ import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useState } from "react";
 import { withMask } from "use-mask-input";
 
-
 export default function Form() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [address, setAddress] = useState({ city: "", street: "" });
+
+  async function handleZipCodeBlur(event: React.FocusEvent<HTMLInputElement>) {
+    const zipCode = event.target.value;
+    const response = await fetch(
+      `https://brasilapi.com.br/api/cep/v2/${zipCode}`
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      setAddress({ city: data.city, street: data.street });
+    }
+  }
 
   return (
     <form>
@@ -67,15 +79,20 @@ export default function Form() {
       </div>
       <div className="mb-4">
         <label htmlFor="phone">Telefone Celular</label>
-        <input type="text" id="phone" ref={withMask('(99)99999-9999')} />
+        <input type="text" id="phone" ref={withMask("(99)99999-9999")} />
       </div>
       <div className="mb-4">
         <label htmlFor="cpf">CPF</label>
-        <input type="text" id="cpf" ref={withMask('999.999.999-99')} />
+        <input type="text" id="cpf" ref={withMask("999.999.999-99")} />
       </div>
       <div className="mb-4">
         <label htmlFor="cep">CEP</label>
-        <input type="text" id="cep" ref={withMask('99999-999')} />
+        <input
+          type="text"
+          id="cep"
+          ref={withMask("99999-999")}
+          onBlur={handleZipCodeBlur}
+        />
       </div>
       <div className="mb-4">
         <label htmlFor="address">Endereço</label>
@@ -84,6 +101,7 @@ export default function Form() {
           type="text"
           id="address"
           disabled
+          value={address.street}
         />
       </div>
 
@@ -94,6 +112,7 @@ export default function Form() {
           type="text"
           id="city"
           disabled
+          value={address.city}
         />
       </div>
       {/* terms and conditions input */}
