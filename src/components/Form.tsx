@@ -1,9 +1,12 @@
 import { ErrorMessage } from "@hookform/error-message";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeIcon, EyeOffIcon, Loader } from "lucide-react";
 import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 // import { useHookFormMask, withMask } from "use-mask-input";
 import { useHookFormMask } from "use-mask-input";
+import { userRegisterSchema } from "../schema";
+import type { UserRegister } from "../schema";
 
 export default function Form() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -14,7 +17,8 @@ export default function Form() {
     setValue,
     setError,
     formState: { isSubmitting, errors },
-  } = useForm();
+    // } = useForm();
+  } = useForm<UserRegister>({ resolver: zodResolver(userRegisterSchema) });
 
   const registerWithMask = useHookFormMask(register);
 
@@ -50,7 +54,11 @@ export default function Form() {
     if (!res.ok) {
       console.log(resData);
       for (const field in resData.errors) {
-        setError(field, { type: "manual", message: resData.errors[field] });
+        // setError(field, { type: "manual", message: resData.errors[field] });
+        setError(field as keyof UserRegister, {
+          type: "manual",
+          message: resData.errors[field],
+        });
       }
     } else {
       console.log(resData);
@@ -61,7 +69,7 @@ export default function Form() {
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="mb-4">
         <label htmlFor="name">Nome Completo</label>
-        <input
+        {/* <input
           type="text"
           id="name"
           {...register("name", {
@@ -71,7 +79,8 @@ export default function Form() {
               message: "O nome deve ter no máximo 255 caracteres",
             },
           })}
-        />
+        /> */}
+        <input type="text" id="name" {...register("name")} />
         <div className="min-h-4">
           <p className="text-xs text-red-400 mt-1">
             <ErrorMessage errors={errors} name="name" />
@@ -80,7 +89,7 @@ export default function Form() {
       </div>
       <div className="mb-4">
         <label htmlFor="email">E-mail</label>
-        <input
+        {/* <input
           className=""
           type="email"
           id="email"
@@ -91,7 +100,8 @@ export default function Form() {
               message: "E-mail inválido",
             },
           })}
-        />
+        /> */}
+        <input className="" type="email" id="email" {...register("email")} />
         <div className="min-h-4">
           <p className="text-xs text-red-400 mt-1">
             <ErrorMessage errors={errors} name="email" />
@@ -101,7 +111,7 @@ export default function Form() {
       <div className="mb-4">
         <label htmlFor="password">Senha</label>
         <div className="relative">
-          <input
+          {/* <input
             type={isPasswordVisible ? "text" : "password"}
             id="password"
             {...register("password", {
@@ -111,6 +121,11 @@ export default function Form() {
                 message: "A senha deve ter no mínimo 8 caracteres",
               },
             })}
+          /> */}
+          <input
+            type={isPasswordVisible ? "text" : "password"}
+            id="password"
+            {...register("password")}
           />
           <span className="absolute right-3 top-3">
             <button
@@ -137,7 +152,7 @@ export default function Form() {
       <div className="mb-4">
         <label htmlFor="confirm-password">Confirmar Senha</label>
         <div className="relative">
-          <input
+          {/* <input
             type={isPasswordVisible ? "text" : "password"}
             id="confirm-password"
             {...register("password_confirmation", {
@@ -152,6 +167,11 @@ export default function Form() {
                 }
               },
             })}
+          /> */}
+          <input
+            type={isPasswordVisible ? "text" : "password"}
+            id="confirm-password"
+            {...register("password_confirmation")}
           />
           <span className="absolute right-3 top-3">
             <button
@@ -178,7 +198,7 @@ export default function Form() {
       <div className="mb-4">
         <label htmlFor="phone">Telefone Celular</label>
         {/* <input type="text" id="phone" ref={withMask("(99)99999-9999")} /> */}
-        <input
+        {/* <input
           type="text"
           id="phone"
           {...registerWithMask("phone", "(99) 99999-9999", {
@@ -188,6 +208,11 @@ export default function Form() {
               message: "Telefone inválido",
             },
           })}
+        /> */}
+        <input
+          type="text"
+          id="phone"
+          {...registerWithMask("phone", "(99) 99999-9999")}
         />
         <div className="min-h-4">
           <p className="text-xs text-red-400 mt-1">
@@ -197,7 +222,7 @@ export default function Form() {
       </div>
       <div className="mb-4">
         <label htmlFor="cpf">CPF</label>
-        <input
+        {/* <input
           type="text"
           id="cpf"
           {...registerWithMask("cpf", "999.999.999-99", {
@@ -207,6 +232,11 @@ export default function Form() {
               message: "CPF inválido",
             },
           })}
+        /> */}
+        <input
+          type="text"
+          id="cpf"
+          {...registerWithMask("cpf", "999.999.999-99")}
         />
         <div className="min-h-4">
           <p className="text-xs text-red-400 mt-1">
@@ -216,7 +246,7 @@ export default function Form() {
       </div>
       <div className="mb-4">
         <label htmlFor="cep">CEP</label>
-        <input
+        {/* <input
           type="text"
           id="cep"
           {...registerWithMask("zipcode", "99999-999", {
@@ -226,6 +256,12 @@ export default function Form() {
               message: "CEP inválido",
             },
           })}
+          onBlur={handleZipCodeBlur}
+        /> */}
+        <input
+          type="text"
+          id="cep"
+          {...registerWithMask("zipcode", "99999-999")}
           onBlur={handleZipCodeBlur}
         />
         <div className="min-h-4">
@@ -241,10 +277,13 @@ export default function Form() {
           type="text"
           id="address"
           disabled
-          {...register("address", {
-            required: "O campo endereço precisa ser preenchido",
-          })}
+          {...register("address")}
         />
+        <div className="min-h-4">
+          <p className="text-xs text-red-400 mt-1">
+            <ErrorMessage errors={errors} name="address" />
+          </p>
+        </div>
       </div>
 
       <div className="mb-4">
@@ -254,10 +293,13 @@ export default function Form() {
           type="text"
           id="city"
           disabled
-          {...register("city", {
-            required: "O campo cidade precisa ser preenchido",
-          })}
+          {...register("city")}
         />
+        <div className="min-h-4">
+          <p className="text-xs text-red-400 mt-1">
+            <ErrorMessage errors={errors} name="city" />
+          </p>
+        </div>
       </div>
       {/* terms and conditions input */}
       <div className="mb-4">
@@ -265,10 +307,7 @@ export default function Form() {
           type="checkbox"
           id="terms"
           className="mr-2 accent-slate-500"
-          {...register("terms", {
-            required:
-              "Você precisa aceitar os termos e condições para continuar",
-          })}
+          {...register("terms")}
         />
         <label
           className="text-sm  font-light text-slate-500 mb-1 inline"
