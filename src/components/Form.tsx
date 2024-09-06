@@ -7,6 +7,7 @@ import { FieldValues, useForm } from "react-hook-form";
 import { useHookFormMask } from "use-mask-input";
 import { userRegisterSchema } from "../schema";
 import type { UserRegister } from "../schema";
+import toast from "react-hot-toast";
 
 export default function Form() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -16,6 +17,7 @@ export default function Form() {
     handleSubmit,
     setValue,
     setError,
+    reset,
     formState: { isSubmitting, errors },
     // } = useForm();
   } = useForm<UserRegister>({ resolver: zodResolver(userRegisterSchema) });
@@ -60,8 +62,12 @@ export default function Form() {
           message: resData.errors[field],
         });
       }
+
+      toast.error("Erro ao cadastrar usuário");
     } else {
       console.log(resData);
+      toast.success("Usuário cadastrado com sucesso");
+      reset();
     }
   }
 

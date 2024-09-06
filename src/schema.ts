@@ -31,7 +31,7 @@ export const userRegisterSchema = z
   })
   .refine(
     (data) => {
-      data.password === data.password_confirmation;
+      return data.password === data.password_confirmation;
     },
     {
       message: "As senhas devem coincidir",
